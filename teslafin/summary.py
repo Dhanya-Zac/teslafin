@@ -1,26 +1,36 @@
-# Class Preprocess removes duplicate values, handles missing values, date formatting
-    def __init__(self, dataframe):
+def _init_(self, dataframe):
         assert isinstance(dataframe, pd.DataFrame), "Input should be a Pandas DataFrame"
-        self.df = dataframe.copy()
+        self.df = dataframe
 
-    def preprocess(self):
-        #change date to datetime format to ensure only valid dates are present
-        self.df["Year"] = pd.to_datetime(self.df["Year"], errors='coerce')
-        # Remove invalid dates
-        self.df.dropna(subset=["Year"], inplace=True)
-        #Extract month
-        self.df["Month"] = self.df["Year"].dt.month
-        #Extract year
-        self.df["Year"] = self.df["Year"].dt.year
-        return self.df
+    def get_summary(self):
+        #Returns mean, median, and standard deviation of the closing price of tesla stock dataset.
+        assert "closing_price" in self.df.columns, "DataFrame must contain 'closing_price' column"
+        return {
+            "Mean": self.df["closing_price"].mean(),
+            "Median": self.df["closing_price"].median(),
+            "Std Dev": self.df["closing_price"].std(),
+            "Min": self.df["closing_price"].min(),
+            "Max": self.df["closing_price"].max(),
+            "Quantiles": self.df["closing_price"].quantile([0.25, 0.5, 0.75]).to_dict()
+        }
+        
+def autocorrelation(self, last_lag=10):
+        #Calculate the Autocorrelation Function (ACF) of the closing prices for a range of lags.
+        #Parameters: last_lag (int): Maximum lag value for which to compute ACF
+        #Returns a dictionary with lag values as keys and their corresponding autocorrelation as values
+    
+        # Convert closing_price to numpy array
+        series = self.df["closing_price"].values
+        acf = {}
 
-    def missing_values(self):
-        # Function missing_values handles all missing values and fills them
-        # using the previous value
-        self.df.fillna(method='ffill', inplace=True)
-        return self.df
+        # Calculate ACF for each lag from 1 to last_lag
+        for lag in range(1, last_lag + 1):
+            # Shift the series by lag, align it with the original series, and calculate correlation
+            shifted_series = series[lag:]
+            original_series = series[:-lag]
 
-    def remove_duplicates(self):
-        #Function remove_duplicates removes all duplicate rows in the dataset
-        self.df.drop_duplicates(inplace=True)
-        return self.df
+            # Calculate the correlation
+            correlation = np.corrcoef(original_series, shifted_series)[0, 1]
+            acf[lag] = correlation
+
+        return acf
