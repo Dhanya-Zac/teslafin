@@ -1,4 +1,27 @@
-def transform_data(self):
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+
+
+    def decompose_time_series(self, model='multiplicative'):
+        if self.freq is None:
+            raise ValueError("Frequency must be set for decomposition.")
+        result = seasonal_decompose(self.df['closing_price'], model=model, period=self.freq)
+        result.plot()
+        plt.show()
+    def histogram(self, bins=50):
+        plt.figure(figsize=(10, 6))
+        plt.hist(self.df['log_closing_price'], bins=bins, edgecolor='black', alpha=0.7)
+        plt.title('Histogram of Log-Transformed Tesla Stock Data', fontsize=16)
+        plt.xlabel('log_closing_price', fontsize=14)
+        plt.ylabel('Frequency', fontsize=14)
+        plt.grid(True, linestyle='--', alpha=0.5)
+        plt.show()
+
+    
+    def transform_data(self):
     """
     Apply log transformation to the closing price data.
 
@@ -12,3 +35,4 @@ def transform_data(self):
     self.df["log_closing_price"] = np.log(self.df["closing_price"])
 
     return self.df
+
