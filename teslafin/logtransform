@@ -1,0 +1,14 @@
+def transform_data(self):
+    """
+    Apply log transformation to the closing price data.
+
+    Returns:
+        pd.DataFrame: DataFrame with the log-transformed 'closing_price' column added.
+    """
+    if "closing_price" not in self.df.columns:
+        raise KeyError("DataFrame must contain 'closing_price' column")
+
+    # Apply log transformation to closing price
+    self.df["log_closing_price"] = np.log(self.df["closing_price"])
+
+    return self.df
