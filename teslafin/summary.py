@@ -14,11 +14,12 @@ def _init_(self, dataframe):
             "Quantiles": self.df["closing_price"].quantile([0.25, 0.5, 0.75]).to_dict()
         }
         
-def autocorrelation(self, last_lag=10):
+    def autocorrelation(self, last_lag=10): # Fixed: Corrected indentation
+
         #Calculate the Autocorrelation Function (ACF) of the closing prices for a range of lags.
         #Parameters: last_lag (int): Maximum lag value for which to compute ACF
         #Returns a dictionary with lag values as keys and their corresponding autocorrelation as values
-    
+
         # Convert closing_price to numpy array
         series = self.df["closing_price"].values
         acf = {}
