@@ -2,8 +2,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import seasonal_decompose
-
-
+    def __init__(self, dataframe, freq=None):
+        assert isinstance(dataframe, pd.DataFrame), "Input should be a Pandas DataFrame"
+        self.df = dataframe.copy()
+        self.freq = freq
 
     def decompose_time_series(self, model='multiplicative'):
         if self.freq is None:
@@ -11,6 +13,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
         result = seasonal_decompose(self.df['closing_price'], model=model, period=self.freq)
         result.plot()
         plt.show()
+
     def histogram(self, bins=50):
         plt.figure(figsize=(10, 6))
         plt.hist(self.df['log_closing_price'], bins=bins, edgecolor='black', alpha=0.7)
@@ -20,19 +23,17 @@ from statsmodels.tsa.seasonal import seasonal_decompose
         plt.grid(True, linestyle='--', alpha=0.5)
         plt.show()
 
-    
     def transform_data(self):
-    """
-    Apply log transformation to the closing price data.
+        """
+        Apply log transformation to the closing price data.
 
-    Returns:
-        pd.DataFrame: DataFrame with the log-transformed 'closing_price' column added.
-    """
-    if "closing_price" not in self.df.columns:
-        raise KeyError("DataFrame must contain 'closing_price' column")
+        Returns:
+            pd.DataFrame: DataFrame with the log-transformed 'closing_price' column added.
+        """
+        if "closing_price" not in self.df.columns:
+            raise KeyError("DataFrame must contain 'closing_price' column")
 
-    # Apply log transformation to closing price
-    self.df["log_closing_price"] = np.log(self.df["closing_price"])
+        # Apply log transformation to closing price
+        self.df["log_closing_price"] = np.log(self.df["closing_price"])
 
-    return self.df
-
+        return self.df
